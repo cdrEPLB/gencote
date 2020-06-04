@@ -1,0 +1,1819 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=windows-1252">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <meta http-equiv="Expires" content="0">
+    
+	<script>
+
+var _hidediv = null;
+var classification = null;
+var afftheme = null;
+
+var cleclass 	= 	"cleclass";
+var clecote 	= 	"clecote";
+var cletheme 	= 	"cletheme";
+var cleaut 		= 	"cleaut";
+var cletitre 	= 	"cletitre";
+
+localStorage.setItem('cleclass', '0');
+localStorage.setItem('clecote', '0');
+localStorage.setItem('cletheme', '0');
+localStorage.setItem('cleaut', '0');
+localStorage.setItem('cletitre', '0');
+
+function showdiv(id) {
+  if(_hidediv)
+   _hidediv();
+  var div = document.getElementById(id);
+  div.style.display = 'block';
+  _hidediv = function () { div.style.display = 'none'; };
+ }
+
+ 	  
+ function genecote()  {     
+
+  var nomauteur = document.getElementById("nomaut").value.toUpperCase();
+  var titredoc = document.getElementById("titdoc").value.toUpperCase(); 
+   
+  //mise en mémoire du nom d'auteur et du titre
+  localStorage.setItem(cleaut, JSON.stringify(nomauteur));
+  localStorage.setItem(cletitre, JSON.stringify(titredoc));
+  
+  //ouverture d'une fenêtre pour publication de la cote
+  var cotefinale;
+  var titrewindow = "COTES PROPOSÉES :";
+  //var titrewindow = titrewindow.style.background("yellow");
+	cotefinale = window.open("", "cote", "width=400, height=600");
+	cotefinale.document.write(titrewindow.bold(),"<br><br>");
+	document.body.style.backgroundColor = "yellow";
+
+	//récupération de la cote 
+	var cote = localStorage.getItem(clecote); 
+	//retrait des guillemets en 1ère et dernière position
+	var cote = cote.substring(0,cote.length-1);
+	var cote = cote.substring(1,cote.length);
+	//publication de la cote
+	cotefinale.document.write(cote.fontsize('14 pt').bold().fontcolor("blue"),"<br>");
+		
+	//enlever les guillemets
+	var auteur = localStorage.getItem(cleaut); 
+	var auteur = auteur.substring(0,auteur.length-1);
+	var auteur = auteur.substring(1,auteur.length);
+	var titredoc = localStorage.getItem(cletitre); 
+	var titredoc = titredoc.substring(0,titredoc.length-1);
+	var titredoc = titredoc.substring(1,titredoc.length);
+	
+	//enlever les espaces du début
+		var auteur = auteur.trim();
+		var titredoc = titredoc.trim();
+	
+	var testauteur2 = auteur.substring(0,2);
+	var testauteur3 = auteur.substring(0,3);
+	var testauteur4 = auteur.substring(0,4);
+	var testauteur6 = auteur.substring(0,6);
+	
+	var testtitre2 = titredoc.substring(0,2);
+	var testtitre3 = titredoc.substring(0,3);
+	var testtitre4 = titredoc.substring(0,4);
+	var testtitre6 = titredoc.substring(0,6);
+	
+	//enlever les articles devant le nom d'auteur		
+if (auteur.length == 0) {var auteur = auteur }
+		else {	
+			if (testauteur6 == "DE LA ") 
+				{ var auteur = auteur.replace(testauteur6,"")	}
+			 else if ((testauteur3 == "LA ") || (testauteur3 == "LE ") || (testauteur3 == "L' ") 
+				|| (testauteur3 == "DE ") || (testauteur3 == "D' ") || (testauteur3 == "DU ") )
+				{ var auteur = auteur.replace(testauteur3,"");	}
+			else if ((testauteur4 == "LES ") || (testauteur4 == "DES ")) 		
+				{ var auteur = auteur.replace(testauteur4,"") 	}
+			else if ((testauteur2 == "L'") || (testauteur2 == "D'"))
+				{ var auteur = auteur.replace(testauteur2,"")	}
+			else { var auteur = auteur 	}		
+			};
+		
+	//enlever les articles devant le titre
+	if (titredoc.length == 0) {var titredoc = titredoc }
+		else {	
+			if (testtitre6 == "DE LA ") 
+				{ var titredoc = titredoc.replace(testtitre6,"")	}
+			else if ((testtitre3 == "LA ") || (testtitre3 == "LE ") || (testtitre3 == "L' ") 
+				|| (testtitre3 == "DE ") || (testtitre3 == "D' ") || (testtitre3 == "DU ") || (testtitre3 == "UN "))
+				{ var titredoc = titredoc.replace(testtitre3,"")	}
+			else if ((testtitre4 == "LES ") || (testtitre4 == "DES ") || (testtitre4 == "UNE ")) 		
+				{ var titredoc = titredoc.replace(testtitre4,"")	}
+			else if ((testtitre2 == "L'") || (testtitre2 == "D'"))
+				{ var titredoc = titredoc.replace(testtitre2,"")	}
+			else { var titredoc = titredoc 	}
+			};
+		
+	//enlever les espaces du début	
+		var auteur = auteur.trim();
+		var titredoc = titredoc.trim();
+	
+	//Affichage de la cote
+	if (auteur.length == 0) 
+		//pas d'auteur
+		{ 
+		//3 premières lettres du titre
+		var titredoc = titredoc.substring(0,3); 
+		cotefinale.document.write(titredoc.fontsize('14 pt').fontcolor("orange").bold(),"<br><br>"); 
+		cotefinale.document.write("OU".bold(),"<br><br>");
+		cotefinale.document.write(cote.fontsize('14 pt').fontcolor("blue").bold(),
+		" ",titredoc.fontsize('14 pt').fontcolor("orange").bold(),"<br><br>");
+		//cotefinale.document.write((cote + " " + titredoc).fontsize('14 pt').bold(),"<br><br>");
+		}
+	else
+		//avec auteur
+		{	
+		var auteur = auteur.substring(0,3); 
+		cotefinale.document.write(auteur.fontsize('14 pt').fontcolor("green").bold(),"<br>");
+				
+		var titredoc = titredoc.substring(0,1); 
+		cotefinale.document.write(titredoc.fontsize('14 pt').fontcolor("orange").bold(),"<br><br>");
+		cotefinale.document.write("OU".bold(),"<br><br>");
+		cotefinale.document.write(cote.fontsize('14 pt').fontcolor("blue").bold(), 
+		" ",auteur.fontsize('14 pt').fontcolor("green").bold(),
+		" ",titredoc.fontsize('14 pt').fontcolor("orange").bold(),"<br><br>");
+		}
+	
+	//Préparation affichage informations transmises
+		cotefinale.document.write("INFORMATIONS TRANSMISES :".bold(),"<br>");
+		
+	//enlever les guillemets
+	var classif = localStorage.getItem(cleclass); 
+	var classif = classif.substring(0,classif.length-1);
+	var classif = classif.substring(1,classif.length);
+		
+	var theme = localStorage.getItem(cletheme);  
+	var theme = theme.substring(0,theme.length-1);
+	var theme = theme.substring(1,theme.length);
+	
+	var auteur = localStorage.getItem(cleaut); 
+	var auteur = auteur.substring(0,auteur.length-1);
+	var auteur = auteur.substring(1,auteur.length);
+	
+	var titredoc = localStorage.getItem(cletitre); 
+	var titredoc = titredoc.substring(0,titredoc.length-1);
+	var titredoc = titredoc.substring(1,titredoc.length);
+		
+	//enlever les espaces du début
+	var auteur = auteur.trim();
+	var titredoc = titredoc.trim();
+	
+	var testauteur2 = auteur.substring(0,2);
+	var testauteur3 = auteur.substring(0,3);
+	var testauteur4 = auteur.substring(0,4);
+	var testauteur6 = auteur.substring(0,6);
+	
+	var testtitre2 = titredoc.substring(0,2);
+	var testtitre3 = titredoc.substring(0,3);
+	var testtitre4 = titredoc.substring(0,4);
+	var testtitre6 = titredoc.substring(0,6);
+	
+	//entourer les articles devant le nom d'auteur avec ()	
+	if (auteur.length == 0) {var auteur = auteur }
+		else {	
+			if (testauteur6 == "DE LA ") 	{ var auteur = auteur.replace(testauteur6,"(DE LA) ")	}
+			
+			else if (testauteur3 == "LA ") 	{ var auteur = auteur.replace(testauteur3,"(LA) ")	}
+			else if (testauteur3 == "LE ")	{ var auteur = auteur.replace(testauteur3,"(LE) ")	} 
+			else if (testauteur3 == "L' ") 	{ var auteur = auteur.replace(testauteur3,"(L')")	}
+			else if (testauteur3 == "DE ")	{ var auteur = auteur.replace(testauteur3,"(DE) ")	} 
+			else if (testauteur3 == "D' ") 	{ var auteur = auteur.replace(testauteur3,"(D')")	}
+			else if (testauteur3 == "DU ") 	{ var auteur = auteur.replace(testauteur3,"(DU) ")	}
+				
+			else if (testauteur4 == "LES ") { var auteur = auteur.replace(testauteur4,"(LES) ")	}
+			else if (testauteur4 == "DES ")	{ var auteur = auteur.replace(testauteur4,"(DES) ")	} 			
+			
+			else if (testauteur2 == "L'") 	{ var auteur = auteur.replace(testauteur2,"(L')")	}
+			else if (testauteur2 == "D'")	{ var auteur = auteur.replace(testauteur2,"(D')")	}			
+
+			else { var auteur = auteur 	}		
+			};
+		
+	
+	//entourer les articles devant le titre avec ()
+	if (titredoc.length == 0) {var titredoc = titredoc }
+		else {	
+			if (testtitre6 == "DE LA ") 	{ var titredoc = titredoc.replace(testtitre6,"(DE LA) ")}
+			
+			else if (testtitre3 == "LA ") 	{ var titredoc = titredoc.replace(testtitre3,"(LA) ")	}
+			else if (testtitre3 == "LE ")	{ var titredoc = titredoc.replace(testtitre3,"(LE) ")	} 
+			else if (testtitre3 == "L' ") 	{ var titredoc = titredoc.replace(testtitre3,"(L')")	}
+			else if (testtitre3 == "DE ")	{ var titredoc = titredoc.replace(testtitre3,"(DE) ")	} 
+			else if (testtitre3 == "D' ") 	{ var titredoc = titredoc.replace(testtitre3,"(D')")	}
+			else if (testtitre3 == "DU ") 	{ var titredoc = titredoc.replace(testtitre3,"(DU) ")	}
+			else if (testtitre3 == "UN ") 	{ var titredoc = titredoc.replace(testtitre3,"(UN) ")	}
+				
+			else if (testtitre4 == "LES ") 	{ var titredoc = titredoc.replace(testtitre4,"(LES) ")	}
+			else if (testtitre4 == "DES ")	{ var titredoc = titredoc.replace(testtitre4,"(DES) ")	} 
+			else if (testtitre4 == "UNE ")	{ var titredoc = titredoc.replace(testtitre4,"(UNE) ")	} 		
+				
+			else if (testtitre2 == "L'") 	{ var titredoc = titredoc.replace(testtitre2,"(L')")	}
+			else if (testtitre2 == "D'")	{ var titredoc = titredoc.replace(testtitre2,"(D')")	}
+				
+			else { var titredoc = titredoc 	}
+			};
+		
+	//enlever les espaces du début	
+	var auteur = auteur.trim();
+	var titredoc = titredoc.trim();
+	var classif = classif.trim();
+	var theme = theme.trim();
+	var auteur = auteur.trim();
+	var titredoc = titredoc.trim();
+	
+	//Affichage informations transmises
+	cotefinale.document.write("-------------<br>",classif.bold(),"<br><br>");
+	cotefinale.document.write(theme.fontcolor("blue"),"<br>");
+	cotefinale.document.write(auteur.fontcolor("green"),"<br>");
+	cotefinale.document.write(titredoc.fontcolor("orange"),"<br>___________________________________<br><br>");
+		
+	//format de l'affichage
+	cotefinale.document.body.style.cssText = "font-family:Arial !important; text-align:center";
+	cotefinale.focus(); 
+ } 
+ 
+
+ 
+</script> <style>H3 {FONT-SIZE: 16pt;COLOR: #0B8615};</style>
+    <style>H4 {FONT-SIZE: 14pt;COLOR: #ff6600};</style>
+  </head>
+  <body><font face="Arial, Helvetica, sans-serif">
+      <h2 style="text-align: center;">Comment fabriquer une Cote simple :</h2>
+      <table style="width: 450px;" cellpadding="7;">
+        <tbody>
+          <tr style="text-align: left;">
+            <td>Les documents d'un lieu documentaire sont rangés à partir de la
+              réflexion menée par le/la documentaliste qui respecte les règles
+              d'une classification pour réaliser les cotes.<br>
+              Dans un même lieu documentaire. Les documents peuvent être cotés
+              selon une ou plusieurs classifications.<br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>Étape 1 : quelle classification est utilisée ?</h3>
+      <div>
+        <table style="width: 450px;" cellpadding="7;">
+          <tbody>
+            <tr>
+              <td style="text-align: center; background-color: #66ffff;"><input
+
+                  onclick="
+						var classification = 'Classification Alphabétique Adaptée aux Fictions'; 												localStorage.setItem(cleclass, JSON.stringify(classification));												showdiv('CAAF');"
+
+                  name="classif" value="Fiction" id="caaf" type="radio"> </td>
+              <td style="text-align: center; background-color: #ccffff; font-size:11pt;"><b><br>Classification
+                Alphabétique Adaptée aux Fictions</b><br><br></td>
+            </tr>
+            <tr>
+              <td style="text-align: center; background-color: yellow; "><input
+
+                  onclick="
+						var classification = 'Classification Décimale de Dewey (CDD)'; 						localStorage.setItem(cleclass, JSON.stringify(classification));												showdiv('CDD');"
+
+                  name="classif" value="Dewey" id="cdd" type="radio"> </td>
+              <td style="text-align: center; background-color: #ffffcc; font-size:11pt;"><b>Classification
+                Décimale de Dewey (CDD)</b>
+                <br><br>
+                <div style="text-align: left; font-size:9pt;">BÉTHERY, Annie. <i><b>Abrégé
+                      de la classification décimale de Dewey</b></i>. Éditions
+                  du cercle de la librairie, 1998. 317 p.</div>
+              </td>
+            </tr>
+            <tr>
+              <td style="text-align: center; background-color: #33ff33;"><input
+
+                  onclick="
+						var classification = 'Classification Décimale Universelle (CDU)'; 						localStorage.setItem(cleclass, JSON.stringify(classification));						showdiv('CDU');"
+
+                  name="classif" value="Universelle" id="cdu" type="radio"> </td>
+              <td style="background-color: #ccff99; text-align: center; font-size:11pt;"><b>Classification
+                Décimale Universelle (CDU)</b><br>
+                <br>
+                <div style="text-align: left; font-size:9pt;"><i><b>Universal
+                      Decimal Classification Summary</b></i> [En ligne]. UDC
+                  Consortium, [02/01/2018]. Disponible à <a href="http://www.udcsummary.info/php/index.php?lang=fr"
+
+                    title="Abrégé de le Classification Décimale Universelle en ligne"
+
+                    target="_blank">www.udcsummary.info</a></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Étape 2 : de quel sujet traite le document ?</h3>
+      <div>Sélectionner un sujet en cliquant sur le bouton à sa gauche.<br>
+        Les boutons sur la droite servent à obtenir des sujets plus précis.</div>
+      <!--Classification Alphabétique Spéciale Fiction-->
+      <div><font face="Arial, Helvetica, sans-serif">
+          <div id="CAAF" style="display: none;">
+            <h4>Classification Alphabétique Adaptée aux Fictions</h4>
+            <table style="width: 450px; height: 202px;" cellpadding="7;">
+              <tbody>
+                <tr>
+                  <td><br>
+                  </td>
+                  <td style="height: 19px;">Thème</td>
+                  <td style="text-align: center;">Indice<br>
+                    Alhabétique</td>
+                </tr>
+                <tr style="background-color: #ccffff;">
+                  <td style="text-align: center; background-color: #ccffff;"><input
+
+                      onclick="
+					var theme = 'BANDE DESSINÉE / MANGA'; var cote = 'BD';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="CAAF" value="BD" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccffff;"><font
+
+                      face="Arial, Helvetica, sans-serif">BANDE DESSINÉE / MANGA</font></td>
+                  <td style="text-align: center; background-color: #ccffff;"><b>BD</b></td>
+                </tr>
+                <tr style="background-color: #66ffff;">
+                  <td style="text-align: center; background-color: #66ffff;"><input
+
+                      onclick="
+					var theme = 'CONTE'; var cote = 'C';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="CAAF" id="C" type="radio"> </td>
+                  <td style="text-align: center; background-color: #66ffff;"><font
+
+                      face="Arial, Helvetica, sans-serif">CONTE</font></td>
+                  <td style="text-align: center; background-color: #66ffff;"><b>C</b></td>
+                </tr>
+                <tr style="background-color: #ccffff;">
+                  <td style="text-align: center; background-color: #ccffff;"><input
+
+                      onclick="
+					var theme = 'POÉSIE'; var cote = 'P';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="CAAF" value="P" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccffff;"><font
+
+                      face="Arial, Helvetica, sans-serif">POÉSIE</font></td>
+                  <td style="text-align: center; background-color: #ccffff;"><b>P</b></td>
+                </tr>
+                <tr style="background-color: #66ffff;">
+                  <td style="text-align: center; background-color: #66ffff;"><input
+
+                      onclick="
+					var theme = 'ROMAN'; var cote = 'R';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="CAAF" value="R" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: #66ffff;"><font
+
+                      face="Arial, Helvetica, sans-serif">ROMAN</font></td>
+                  <td style="text-align: center; background-color: #66ffff;"><b>R</b></td>
+                </tr>
+                <tr style="background-color: #ccffff;">
+                  <td style="text-align: center; background-color: #ccffff;"><input
+
+                      onclick="
+					var theme = 'PIÉCE DE THÉÂTRE'; var cote = 'T';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="CAAF" value="T" type="radio"> </td> 
+                  <td style="text-align: center; background-color: #ccffff;"><font
+
+                      face="Arial, Helvetica, sans-serif">PIÉCE DE THÉÂTRE</font></td>
+                  <td style="text-align: center; background-color: #ccffff;"><b>T</b></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--Classification Décimale de Dewey-->
+          <div id="CDD" style="display: none;">
+            <h4>Classification Décimale de Dewey :</h4>
+            <h3>Classes principales</h3>
+            <table style="width: 450px; height: 148px;" cellpadding="7;">
+              <tbody>
+                <tr>
+                  <td><br>
+                  </td>
+                  <td>Thème</td>
+                  <td style="text-align: center;">Indice<br>
+                    Num.</td>
+                  <td style="text-align: center;"><font face="Arial, Helvetica, sans-serif">+</font>
+                  </td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"> <input
+
+                      onclick="
+					var theme = 'OUVRAGES GENERAUX.'; var cote = '000';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD000" type="radio"> </td>
+                  <td style="text-align: center; background-color: yellow;">OUVRAGES
+                    GENERAUX. INFORMATIQUE. INFORMATION </td>
+                  <td style="text-align: center; background-color: yellow;"><b>000
+                      </b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'PHILOSOPHIE. PSYCHOLOGIE'; var cote = '100';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD100" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;">PHILOSOPHIE.
+                    PSYCHOLOGIE<br>
+                  </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>100
+                      </b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"><input
+
+                      onclick="
+					var theme = 'RELIGION. THEOLOGIE'; var cote = '200';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD200" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: yellow;">RELIGION.
+                    THEOLOGIE<br>
+                  </td>
+                  <td style="text-align: center; background-color: yellow;"><b>200
+                      </b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'SCIENCES SOCIALES'; var cote = '300';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD300" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;">SCIENCES
+                    SOCIALES <br>
+                  </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>300
+                      </b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"><input
+
+                      onclick="
+					var theme = 'LANGUE. LINGUISTIQUE'; var cote = '400';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD400" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: yellow;">LANGUE.
+                    LINGUISTIQUE.<br>
+                  </td>
+                  <td style="text-align: center; background-color: yellow;"><b>400
+                      </b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'SCIENCES PURES'; var cote = '500';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD500" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;">SCIENCES
+                    PURES <br>
+                    Mathématiques, Sciences de la nature<br>
+                  </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>500
+                      </b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"><input
+
+                      onclick="
+					var theme = 'SCIENCES APPLIQUEES. TECHNIQUES'; var cote = '600';  					                  localStorage.setItem(clecote, JSON.stringify(cote));					                  localStorage.setItem(cletheme, JSON.stringify(theme));					                  showdiv('Aut');"
+
+                      name="theme1" value="CDD600" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: yellow;">SCIENCES
+                    APPLIQUEES. TECHNIQUES<br>
+                    Médecine, Agriculture<br>
+                  </td>
+                  <td style="text-align: center; background-color: yellow;"><b>600</b></td>
+                  <td><input onclick="showdiv('CDDCL600');" name="theme1" value="CDDCL600"
+
+                      type="radio"> </td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'ARTS. DIVERTISSEMENTS. SPORT'; var cote = '700';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD700" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;">ARTS.
+                    DIVERTISSEMENTS. SPORT<br>
+                  </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>700
+                      </b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"><input
+
+                      onclick="
+					var theme = 'LITTERATURE'; var cote = '800';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD800" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: yellow;">LITTERATURE<br>
+                  </td>
+                  <td style="text-align: center; background-color: yellow;"><b>800
+                      </b></td>
+                  <td><input onclick="showdiv('CDDCL800');" name="theme1" value="CDDCL800"
+
+                      type="radio"> </td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'GEOGRAPHIE. BIOGRAPHIE. HISTOIRE'; var cote = '900';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD900" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><font
+
+                      face="Arial, Helvetica, sans-serif">GEOGRAPHIE.
+                      BIOGRAPHIE. HISTOIRE</font> </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>900
+                      </b></td>
+                  <td><br>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--Classification Décimale de Dewey : Classe 600-->
+          <div id="CDDCL600" style="display: none;">
+            <h4>Classification Décimale de Dewey :</h4>
+            <h3>Détail de la classe 600</h3>
+            <table style="width: 450px; height: 148px;" cellpadding="7;">
+              <tbody>
+                <tr>
+                  <td style="text-align: center; background-color: #ffffcc;">CDD<br>
+                    <input onclick="showdiv('CDD');" name="theme1" value="CDD" type="radio"><br>
+                  </td>
+                  <td>Thème</td>
+                  <td style="text-align: center;">Indice<br>
+                    Num.</td>
+                  <td style="text-align: center;"><font face="Arial, Helvetica, sans-serif">+</font>
+                  </td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"> <br>
+                  </td>
+                  <td style="text-align: center; background-color: yellow;">Généralités<br>
+                  </td>
+                  <td style="text-align: center; background-color: yellow;"><b>601
+                      à 609 </b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'Sciences médicales'; var cote = '610';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD610" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><font
+
+                      face="Arial, Helvetica, sans-serif">Sciences médicales</font></td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>610</b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"><input
+
+                      onclick="
+					var theme = 'Ingénierie. Technologie en général'; var cote = '620';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD620" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: yellow;"><font
+
+                      face="Arial, Helvetica, sans-serif">Ingénierie.
+                      Technologie en général</font></td>
+                  <td style="text-align: center; background-color: yellow;"><b>620</b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'Agriculture.                    Sylviculture. Exploitation de la faune et de la flore                    sauvage'; var cote = '630';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD630" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><font
+
+                      face="Arial, Helvetica, sans-serif">Agriculture.
+                      Sylviculture. Exploitation de la faune et de la flore
+                      sauvage</font></td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>630</b></td>
+                  <td><input onclick="showdiv('CDDCL630');" name="theme1" value="CDDCL630"
+
+                      type="radio"> </td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"><input
+
+                      onclick="
+					var theme = 'Economie domestique.                    Sciences ménagères'; var cote = '640';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD640" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: yellow;"><font
+
+                      face="Arial, Helvetica, sans-serif">Economie domestique.
+                      Sciences ménagères</font></td>
+                  <td style="text-align: center; background-color: yellow;"><b>640</b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'Industries du transport                    et de la communication. Comptabilité. Gestion d'entreprise.                    Relations publiques'; var cote = '650';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD650" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><font
+
+                      face="Arial, Helvetica, sans-serif">Industries du
+                      transport et de la communication. Comptabilité. Gestion
+                      d'entreprise. Relations publiques</font></td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>650</b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"><input
+
+                      onclick="
+					var theme = 'Technologie de la                    chimie. Industries chimiques et apparentées'; var cote = '660';  					                  localStorage.setItem(clecote, JSON.stringify(cote));					                  localStorage.setItem(cletheme, JSON.stringify(theme));					                  showdiv('Aut');"
+
+                      name="theme1" value="CDD660" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: yellow;"><font
+
+                      face="Arial, Helvetica, sans-serif">Technologie de la
+                      chimie. Industries chimiques et apparentées </font></td>
+                  <td style="text-align: center; background-color: yellow;"><b>660</b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'Industries, commerces et                    artisanats divers'; var cote = '670';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD670" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><font
+
+                      face="Arial, Helvetica, sans-serif">Industries, commerces
+                      et artisanats divers</font></td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>670</b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"><input
+
+                      onclick="
+					var theme = 'Industries, artisanats                    et commerces de produits finis ou assemblés'; var cote = '680';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD680" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: yellow;"><font
+
+                      face="Arial, Helvetica, sans-serif">Industries, artisanats
+                      et commerces de produits finis ou assemblés</font></td>
+                  <td style="text-align: center; background-color: yellow;"><b>680</b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'Industrie de la                    construction. Materiaux, méthodes et procédes'; var cote = '690';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD690" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><font
+
+                      face="Arial, Helvetica, sans-serif">Industrie de la
+                      construction. Materiaux, méthodes et procédes</font></td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>690</b></td>
+                  <td><br>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--Classification Décimale de Dewey : Classe 630-->
+          <div id="CDDCL630" style="display: none;">
+            <h4>Classification Décimale de Dewey :</h4>
+            <h3>Détail de la classe 630</h3>
+            <table style="width: 450px; height: 148px;" cellpadding="7;">
+              <tbody>
+                <tr>
+                  <td style="text-align: center; background-color: #ffffcc;">600<br>
+                    <input onclick="showdiv('CDDCL600');" name="theme1" value="CDDCL600"
+
+                      type="radio"><br>
+                  </td>
+                  <td>Thème</td>
+                  <td style="text-align: center;">Indice<br>
+                    Num.</td>
+                  <td style="text-align: center;"><font face="Arial, Helvetica, sans-serif">+</font>
+                  </td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"> <br>
+                  </td>
+                  <td style="text-align: center; background-color: yellow;"><br>
+                  </td>
+                  <td style="text-align: center; background-color: yellow;"><b>630.1
+                      à 630.9 </b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'Agriculture en général'; var cote = '631';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD631" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><font
+
+                      face="Arial, Helvetica, sans-serif">Agriculture en général</font>
+                  </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>631</b></td>
+                  <td style="text-align: center;"><input onclick="showdiv('CDDCL631');"
+
+                      name="theme1" value="CDDCL631" type="radio"> </td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"><input
+
+                      onclick="
+					var theme = 'Dégâts, blessures aux                    plantes. Maladies des plantes. Ravageurs'; var cote = '632';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD632" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: yellow;"><font
+
+                      face="Arial, Helvetica, sans-serif">Dégâts, blessures aux
+                      plantes. Maladies des plantes. Ravageurs</font> </td>
+                  <td style="text-align: center; background-color: yellow;"><b>632</b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'Plantes de culture et leur production'; var cote = '633';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD633" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><font
+
+                      face="Arial, Helvetica, sans-serif">Plantes de culture et
+                      leur production</font> </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>633</b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"><input
+
+                      onclick="
+					var theme = 'Arboriculture fruitière. Exploitation                    forestière, sylviculture'; var cote = '634';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD634" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: yellow;"><font
+
+                      face="Arial, Helvetica, sans-serif">Arboriculture
+                      fruitière </font><font face="Arial, Helvetica, sans-serif">Exploitation
+                      forestière, sylviculture</font><br>
+                  </td>
+                  <td style="text-align: center; background-color: yellow;"><b>634</b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'Plantes de jardin.                    Jardinage'; var cote = '635';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD635" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><font
+
+                      face="Arial, Helvetica, sans-serif">Plantes de jardin.
+                      Jardinage</font> </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>635</b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"><input
+
+                      onclick="
+					var theme = 'Elevage et reproduction                    d'animaux (bétail, animaux domestiques°'; var cote = '636';  					                  localStorage.setItem(clecote, JSON.stringify(cote));					                  localStorage.setItem(cletheme, JSON.stringify(theme));					                  showdiv('Aut');"
+
+                      name="theme1" value="CDD636" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: yellow;"><font
+
+                      face="Arial, Helvetica, sans-serif">Elevage et
+                      reproduction d'animaux (bétail, animaux domestiques)</font>
+                  </td>
+                  <td style="text-align: center; background-color: yellow;"><b>636</b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'Produits des animaux                    domestiques et du gibier'; var cote = '637';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD637" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><font
+
+                      face="Arial, Helvetica, sans-serif">Produits des animaux
+                      domestiques et du gibier</font> </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>637</b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"><input
+
+                      onclick="
+					var theme = 'Elevage d’insectes et                    autres arthropodes'; var cote = '638';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD638" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: yellow;"><font
+
+                      face="Arial, Helvetica, sans-serif">Elevage d’insectes et
+                      autres arthropodes</font> </td>
+                  <td style="text-align: center; background-color: yellow;"><b>638</b></td>
+                  <td><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'Chasse.                    Pêche. Pisciculture'; var cote = '639';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD639" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><font
+
+                      face="Arial, Helvetica, sans-serif">Chasse. Pêche.
+                      Pisciculture</font> </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>639</b></td>
+                  <td><br>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--Classification Décimale de Dewey : Classe 631-->
+          <div id="CDDCL631" style="display: none;">
+            <h4>Classification Décimale de Dewey :</h4>
+            <h3>Détail de la classe 631</h3>
+            <table style="width: 450px; height: 148px;" cellpadding="7;">
+              <tbody>
+                <tr>
+                  <td style="text-align: center; background-color: #ffffcc;">630<br>
+                    <input onclick="showdiv('CDDCL630');" name="theme1" value="CDDCL630"
+
+                      type="radio"><br>
+                  </td>
+                  <td>Thème</td>
+                  <td style="text-align: center;">Indice<br>
+                    Num.</td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"> <br>
+                  </td>
+                  <td style="text-align: center; background-color: yellow;"> <br>
+                  </td>
+                  <td style="text-align: center; background-color: yellow;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'Bâtiments, structures et Installations agricoles.'; var cote = '631.2';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD6312" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><font
+
+                      face="Arial, Helvetica, sans-serif">Bâtiments, structures
+                      et Installations agricoles.</font></td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b></b><b>631.2</b></td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"><input
+
+                      onclick="
+					var theme = 'Machines,                        outillages et équipements agricoles'; var cote = '631.3';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD6313" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: yellow;">Machines,
+                    outillages et équipements agricoles</td>
+                  <td style="text-align: center; background-color: yellow;"><b>631.3</b></td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'Science                            du Sol. Pédologie.'; var cote = '631.4';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD6314" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;">Science
+                    du Sol. Pédologie.</td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>631.4</b></td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"><input
+
+                      onclick="
+					var theme = 'Travaux agricoles'; var cote = '631.5';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD6315" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: yellow;">Travaux
+                    agricoles</td>
+                  <td style="text-align: center; background-color: yellow;"><b>631.5</b></td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'Génie rural'; var cote = '631.6';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD6316" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;">Génie
+                    rural</td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>631.6</b></td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"><input
+
+                      onclick="
+					var theme = 'Conservation                    des eaux'; var cote = '631.7';  					                  localStorage.setItem(clecote, JSON.stringify(cote));					                  localStorage.setItem(cletheme, JSON.stringify(theme));					                  showdiv('Aut');"
+
+                      name="theme1" value="CDD6317" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: yellow;">Conservation
+                    des eaux</td>
+                  <td style="text-align: center; background-color: yellow;"><font
+
+                      face="Arial, Helvetica, sans-serif"><font face="Arial, Helvetica, sans-serif"><font
+
+                          face="Arial, Helvetica, sans-serif"><font face="Arial, Helvetica, sans-serif"><b>631.7</b></font></font></font></font></td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'Fertilisants,                        fumiers et enrichissement du sol. Favorisation de la                        croissance. Stimulants, engrais'; var cote = '631.8';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD6318" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;"><font
+
+                      face="Arial, Helvetica, sans-serif"><font face="Arial, Helvetica, sans-serif">Fertilisants,
+                        fumiers et enrichissement du sol. Favorisation de la
+                        croissance. Stimulants, engrais</font></font></td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>631.8</b></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--Classification Décimale de Dewey : Classe 800-->
+          <div id="CDDCL800" style="display: none;">
+            <h4>Classification Décimale de Dewey :</h4>
+            <h3>Détail de la classe 800</h3>
+            <table style="width: 450px; height: 148px;" cellpadding="7;">
+              <tbody>
+                <tr>
+                  <td style="text-align: center; background-color: #ffffcc;">CDD<br>
+                    <input onclick="showdiv('CDD');" name="theme1" value="CDD" type="radio"><br>
+                  </td>
+                  <td>Thème</td>
+                  <td style="text-align: center;">Indice<br>
+                    Num.</td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"> <br>
+                  </td>
+                  <td style="text-align: center; background-color: yellow;">Généralités<br>
+                  </td>
+                  <td style="text-align: center; background-color: yellow;"><b>801
+                      à 809 </b></td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'Littérature américaine'; var cote = '810';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD810" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;">Littérature
+                    américaine</td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>810</b></td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"><input
+
+                      onclick="
+					var theme = 'Littérature de langue anglaise'; var cote = '820';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD20" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: yellow;">Littérature
+                    de langue anglaise</td>
+                  <td style="text-align: center; background-color: yellow;"><b>820</b></td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'Littérature allemande'; var cote = '830';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD830" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;">Littérature
+                    allemande</td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>830</b></td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"><input
+
+                      onclick="
+					var theme = 'Littérature française'; var cote = '840';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD840" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: yellow;">Littérature
+                    française</td>
+                  <td style="text-align: center; background-color: yellow;"><b>840</b></td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'Littérature de langues italienne, roumaine'; var cote = '850';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD850" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;">Littérature
+                    de langues italienne, roumaine</td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>850</b></td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"><input
+
+                      onclick="
+					var theme = 'Littérature de langues espagnole, portugaise'; var cote = '860';  					                  localStorage.setItem(clecote, JSON.stringify(cote));					                  localStorage.setItem(cletheme, JSON.stringify(theme));					                  showdiv('Aut');"
+
+                      name="theme1" value="CDD860" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: yellow;">Littérature
+                    de langues espagnole, portugaise</td>
+                  <td style="text-align: center; background-color: yellow;"><b>860</b></td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'Littérature latine'; var cote = '870';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD870" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;">Littérature
+                    latine</td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>870</b></td>
+                </tr>
+                <tr style="background-color: yellow;">
+                  <td style="text-align: center; background-color: yellow;"><input
+
+                      onclick="
+					var theme = 'Littérature grecque'; var cote = '880';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD880" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: yellow;">Littérature
+                    grecque</td>
+                  <td style="text-align: center; background-color: yellow;"><b>880</b></td>
+                </tr>
+                <tr style="background-color: #ffffcc;">
+                  <td style="text-align: center; background-color: #ffffcc;"><input
+
+                      onclick="
+					var theme = 'Littérature des autres langues'; var cote = '890';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDD890" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ffffcc;">Littérature
+                    des autres langues</td>
+                  <td style="text-align: center; background-color: #ffffcc;"><b>890</b></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--Classification Décimale Universelle-->
+          <div id="CDU" style="display: none;">
+            <h4>Classification Décimale de Universelle :</h4>
+            <h3>Classes principales</h3>
+            <font face="Arial, Helvetica, sans-serif"></font>
+            <table style="width: 450px; " cellpadding="7;">
+              <tbody>
+                <tr>
+                  <td><br>
+                  </td>
+                  <td>Thème</td>
+                  <td style="text-align: center;">Indice<br>
+                    Num.</td>
+                  <td style="text-align: center;">+</td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'OUVRAGES GENERAUX.'; var cote = '0';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU0" type="radio"> </td>
+                  <td style="text-align: center; background-color: #33ff33;">OUVRAGES
+                    GENERAUX. INFORMATIQUE. INFORMATION </td>
+                  <td style="text-align: center; background-color: #33ff33;"><b>0</b></td>
+                  <td style="background-color: #33ff33;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ccff99;">
+                  <td style="text-align: center; background-color: #ccff99;"><input
+
+                      onclick="
+					var theme = 'PHILOSOPHIE. PSYCHOLOGIE'; var cote = '1';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU1" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccff99;">PHILOSOPHIE.
+                    PSYCHOLOGIE<br>
+                  </td>
+                  <td style="text-align: center; background-color: #ccff99;"><b>1</b></td>
+                  <td style="background-color: #ccff99;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'RELIGION. THEOLOGIE'; var cote = '2';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU2" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: #33ff33;">RELIGION.
+                    THEOLOGIE<br>
+                  </td>
+                  <td style="text-align: center; background-color: #33ff33;"><b>2</b></td>
+                  <td style="background-color: #33ff33;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ccff99;">
+                  <td style="text-align: center; background-color: #ccff99;"><input
+
+                      onclick="
+					var theme = 'SCIENCES SOCIALES'; var cote = '3';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU3" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccff99;">SCIENCES
+                    SOCIALES <br>
+                  </td>
+                  <td style="text-align: center; background-color: #ccff99;"><b>3</b></td>
+                  <td style="background-color: #ccff99;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><br>
+                  </td>
+                  <td style="height: 20px; text-align: center; background-color: #33ff33;"><br>
+                  </td>
+                  <td style="text-align: center; background-color: #33ff33;"><b>
+                    </b> <br>
+                  </td>
+                  <td style="background-color: #33ff33;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ccff99;">
+                  <td style="text-align: center; background-color: #ccff99;"><input
+
+                      onclick="
+					var theme = 'SCIENCES PURES'; var cote = '5';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU5" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccff99;">SCIENCES
+                    PURES <br>
+                    Mathématiques, Sciences de la nature<br>
+                  </td>
+                  <td style="text-align: center; background-color: #ccff99;"><b>5</b></td>
+                  <td style="background-color: #ccff99;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'SCIENCES APPLIQUEES. TECHNIQUES'; var cote = '6';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDUCL6" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: #33ff33;">SCIENCES
+                    APPLIQUEES. TECHNIQUES<br>
+                    Médecine, Agriculture<br>
+                  </td>
+                  <td style="text-align: center; background-color: #33ff33;"><b>6</b></td>
+                  <td style="background-color: #33ff33;"><input onclick="showdiv('CDUCL6');"
+
+                      name="theme1" value="CDUCL6" type="radio"> </td>
+                </tr>
+                <tr style="background-color: #ccff99;">
+                  <td style="text-align: center; background-color: #ccff99;"><input
+
+                      onclick="
+					var theme = 'ARTS. DIVERTISSEMENTS. SPORT'; var cote = '7';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU7" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccff99;">ARTS.
+                    DIVERTISSEMENTS. SPORT<br>
+                  </td>
+                  <td style="text-align: center; background-color: #ccff99;"><b>7</b></td>
+                  <td style="background-color: #ccff99;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'LITTERATURE. LANGUE. LINGUISTIQUE'; var cote = '8';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU8" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: #33ff33;">LITTERATURE.
+                    <font face="Arial, Helvetica, sans-serif">LANGUE.
+                      LINGUISTIQUE</font> </td>
+                  <td style="text-align: center; background-color: #33ff33;"><b>8</b></td>
+                  <td style="background-color: #33ff33;"><input onclick="showdiv('CDUCL8');"
+
+                      name="theme1" value="CDUCL8" type="radio"> </td>
+                </tr>
+                <tr style="background-color: #ccff99;">
+                  <td style="text-align: center; background-color: #ccff99;"><input
+
+                      onclick="
+					var theme = 'GEOGRAPHIE. BIOGRAPHIE. HISTOIRE'; var cote = '9';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU9" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccff99;">GEOGRAPHIE.
+                    BIOGRAPHIE. HISTOIRE</td>
+                  <td style="text-align: center; background-color: #ccff99;"><b>9</b></td>
+                  <td style="background-color: #ccff99;"><br>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--Classification Décimale Universelle : Classe 6-->
+          <div id="CDUCL6" style="display: none;">
+            <h4>Classification Décimale de Universelle : </h4>
+            <h3>Détail de la classe 6</h3>
+            <font face="Arial, Helvetica, sans-serif"></font>
+            <table style="width: 450px; " cellpadding="7;">
+              <tbody>
+                <tr>
+                  <td style="background-color: #ccff99; text-align: center;">CDU<br>
+                    <input onclick="showdiv('CDU');" name="theme1" value="CDU" type="radio"></td>
+                  <td>Thème</td>
+                  <td style="text-align: center;">Indice<br>
+                    Num. </td>
+                  <td style="text-align: center;">+</td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'Biotechnologie'; var cote = '60';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU60" type="radio"> </td>
+                  <td style="text-align: center; background-color: #33ff33;">Biotechnologie
+                    </td>
+                  <td style="text-align: center; background-color: #33ff33;"><b>60
+                      </b></td>
+                  <td style="background-color: #33ff33;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ccff99;">
+                  <td style="text-align: center; background-color: #ccff99;"><input
+
+                      onclick="
+					var theme = 'Sciences médicales'; var cote = '61';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU61" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccff99;">Sciences
+                    médicales </td>
+                  <td style="text-align: center; background-color: #ccff99;"><b>61</b></td>
+                  <td style="background-color: #ccff99;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'Ingénierie. Technologie en général'; var cote = '62';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU62" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: #33ff33;">Ingénierie.
+                    Technologie en général </td>
+                  <td style="text-align: center; background-color: #33ff33;"><b>62</b></td>
+                  <td style="background-color: #33ff33;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ccff99;">
+                  <td style="text-align: center; background-color: #ccff99;"><input
+
+                      onclick="
+					var theme = 'Agriculture. Sylviculture.                      Exploitation de la faune et de la flore sauvage'; var cote = '63';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU63" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccff99;">Agriculture.
+                    Sylviculture. Exploitation de la faune et de la flore
+                    sauvage </td>
+                  <td style="text-align: center; background-color: #ccff99;"><b>63</b></td>
+                  <td style="background-color: #ccff99;"><input onclick="showdiv('CDUCL63');"
+
+                      name="theme1" value="CDUCL63" type="radio"> </td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'Economie domestique. Sciences ménagères'; var cote = '64';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU64" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: #33ff33;">Economie
+                    domestique. Sciences ménagères </td>
+                  <td style="text-align: center; background-color: #33ff33;"><b>64
+                      </b> </td>
+                  <td style="background-color: #33ff33;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ccff99;">
+                  <td style="text-align: center; background-color: #ccff99;"><input
+
+                      onclick="
+					var theme = 'Industries du transport et de la communication. Comptabilité. Gestion d'entreprise.                      Relations publiques'; var cote = '65';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU65" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccff99;">Industries
+                    du transport et de la communication. Comptabilité. Gestion
+                    d'entreprise. Relations publiques </td>
+                  <td style="text-align: center; background-color: #ccff99;"><b>65</b></td>
+                  <td style="background-color: #ccff99;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'Technologie de la chimie. Industries chimiques et apparentées'; var cote = '66';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU66" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: #33ff33;">Technologie
+                    de la chimie. Industries chimiques et apparentées </td>
+                  <td style="text-align: center; background-color: #33ff33;"><b>66</b></td>
+                  <td style="background-color: #33ff33;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ccff99;">
+                  <td style="text-align: center; background-color: #ccff99;"><input
+
+                      onclick="
+					var theme = 'Industries, commerces et artisanats divers'; var cote = '67';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU67" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccff99;">Industries,
+                    commerces et artisanats divers<br>
+                  </td>
+                  <td style="text-align: center; background-color: #ccff99;"><b>67</b></td>
+                  <td style="background-color: #ccff99;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'Industries, artisanats et commerces de produits finis ou assemblés'; var cote = '68';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU68" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: #33ff33;">Industries,
+                    artisanats et commerces de produits finis ou assemblés<br>
+                  </td>
+                  <td style="text-align: center; background-color: #33ff33;"><b>68</b></td>
+                  <td style="background-color: #33ff33;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ccff99;">
+                  <td style="text-align: center; background-color: #ccff99;"><input
+
+                      onclick="
+					var theme = 'Industries de la construction. Materiaux, méthodes et procédes'; var cote = '69';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU69" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccff99;">Industrie
+                    de la construction. Materiaux, méthodes et procédes<br>
+                  </td>
+                  <td style="text-align: center; background-color: #ccff99;"><b>69</b></td>
+                  <td style="background-color: #ccff99;"><br>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--Classification Décimale Universelle : Classe 63-->
+          <div id="CDUCL63" style="display: none;">
+            <h4>Classification Décimale de Universelle : </h4>
+            <h3>Détail de la sous-classe 63</h3>
+            <table style="width: 450px; " cellpadding="7;">
+              <tbody>
+                <tr>
+                  <td style="background-color: #ccff99; text-align: center;">6<br>
+                    <input onclick="showdiv('CDUCL6');" name="theme1" value="CDUCL6"
+
+                      type="radio"></td>
+                  <td>Thème</td>
+                  <td style="text-align: center;">Indice<br>
+                    Num. </td>
+                  <td style="text-align: center;">+</td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'Exploitation forestière, sylviculture'; var cote = '630';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU630" type="radio"> </td>
+                  <td style="text-align: center; background-color: #33ff33;">Exploitation
+                    forestière, sylviculture</td>
+                  <td style="text-align: center; background-color: #33ff33;"><b>630
+                      </b></td>
+                  <td style="background-color: #33ff33;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ccff99;">
+                  <td style="text-align: center; background-color: #ccff99;"><input
+
+                      onclick="
+					var theme = 'Agriculture en général'; var cote = '631';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU631" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccff99;">Agriculture
+                    en général</td>
+                  <td style="text-align: center; background-color: #ccff99;"><b>631</b></td>
+                  <td style="background-color: #ccff99;"><input onclick="showdiv('CDUCL631');"
+
+                      name="theme1" value="CDUCL631" type="radio"> </td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'Dégâts, blessures aux plantes. Maladies des plantes. Ravageurs'; var cote = '632';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU632" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: #33ff33;">Dégâts,
+                    blessures aux plantes. Maladies des plantes. Ravageurs</td>
+                  <td style="text-align: center; background-color: #33ff33;"><b>632</b></td>
+                  <td style="background-color: #33ff33;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ccff99;">
+                  <td style="text-align: center; background-color: #ccff99;"><input
+
+                      onclick="
+					var theme = 'Plantes de culture et leur production'; var cote = '633';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU633" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccff99;">Plantes
+                    de culture et leur production</td>
+                  <td style="text-align: center; background-color: #ccff99;"><b>633</b></td>
+                  <td style="background-color: #ccff99;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'Arboriculture fruitière'; var cote = '634';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU634" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: #33ff33;">Arboriculture
+                    fruitière</td>
+                  <td style="text-align: center; background-color: #33ff33;"><b>634
+                      </b> </td>
+                  <td style="background-color: #33ff33;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ccff99;">
+                  <td style="text-align: center; background-color: #ccff99;"><input
+
+                      onclick="
+					var theme = 'Plantes de jardin. Jardinage'; var cote = '635';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU635" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccff99;">Plantes
+                    de jardin. Jardinage</td>
+                  <td style="text-align: center; background-color: #ccff99;"><b>635</b></td>
+                  <td style="background-color: #ccff99;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'Elevage et reproduction des animaux (bétail, animaux domestiques)'; var cote = '636';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU636" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: #33ff33;">Elevage
+                    et reproduction d'animaux (bétail, animaux domestiques)</td>
+                  <td style="text-align: center; background-color: #33ff33;"><b>636</b></td>
+                  <td style="background-color: #33ff33;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ccff99;">
+                  <td style="text-align: center; background-color: #ccff99;"><input
+
+                      onclick="
+					var theme = 'Produits des animaux domestiques et du gibier'; var cote = '637';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU637" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccff99;">Produits
+                    des animaux domestiques et du gibier</td>
+                  <td style="text-align: center; background-color: #ccff99;"><b>637</b></td>
+                  <td style="background-color: #ccff99;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'Elevage d’insectes et autres arthropodes'; var cote = '638';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU638" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: #33ff33;">Elevage
+                    d’insectes et autres arthropodes</td>
+                  <td style="text-align: center; background-color: #33ff33;"><b>638</b></td>
+                  <td style="background-color: #33ff33;"><br>
+                  </td>
+                </tr>
+                <tr style="background-color: #ccff99;">
+                  <td style="text-align: center; background-color: #ccff99;"><input
+
+                      onclick="
+					var theme = 'Chasse. Pêche. Pisciculture'; var cote = '639';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU639" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccff99;">Chasse.
+                    Pêche. Pisciculture</td>
+                  <td style="text-align: center; background-color: #ccff99;"><b>639</b></td>
+                  <td style="background-color: #ccff99;"><br>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--Classification Décimale Universelle : Classe 631-->
+          <div id="CDUCL631" style="display: none;">
+            <h4>Classification Décimale de Universelle : </h4>
+            <h3>Détail de la sous-classe 631</h3>
+            <font face="Arial, Helvetica, sans-serif"></font>
+            <table style="width: 450px; " cellpadding="7;">
+              <tbody>
+                <tr>
+                  <td style="background-color: #ccff99; text-align: center;">63<br>
+                    <input onclick="showdiv('CDUCL63');" name="theme1" value="CDUCL631"
+
+                      type="radio"></td>
+                  <td>Thème</td>
+                  <td style="text-align: center;">Indice<br>
+                    Num. </td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'Gestion et organisation de l’exploitation agricole'; var cote = '631.1';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU6311" type="radio"> </td>
+                  <td style="text-align: center; background-color: #33ff33;">Gestion
+                    et organisation de l’exploitation agricole</td>
+                  <td style="text-align: center; background-color: #33ff33;"><b>631.1
+                      </b></td> </tr>
+                <tr style="background-color: #ccff99;">
+                  <td style="text-align: center; background-color: #ccff99;"><input
+
+                      onclick="
+					var theme = 'Bâtiments, structures et Installations agricoles'; var cote = '631.2';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU6312" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccff99;">Bâtiments,
+                    structures et Installations agricoles.</td>
+                  <td style="text-align: center; background-color: #ccff99;"><b>631.2</b></td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'Machines, outillages et équipements agricoles'; var cote = '631.3';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU6313" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: #33ff33;">Machines,
+                    outillages et équipements agricoles</td>
+                  <td style="text-align: center; background-color: #33ff33;"><b>631.3</b></td>
+                </tr>
+                <tr style="background-color: #ccff99;">
+                  <td style="text-align: center; background-color: #ccff99;"><input
+
+                      onclick="
+					var theme = 'Science du Sol. Pédologie.'; var cote = '631.4';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU6314" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccff99;">Science
+                    du Sol. Pédologie.</td>
+                  <td style="text-align: center; background-color: #ccff99;"><b>631.4</b></td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'Travaux agricoles'; var cote = '631.5';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU6315" type="radio"> </td>
+                  <td style="text-align: center; background-color: #33ff33;">Travaux
+                    agricoles</td>
+                  <td style="text-align: center; background-color: #33ff33;"><b>631.5</b></td>
+                </tr>
+                <tr style="background-color: #ccff99;">
+                  <td style="text-align: center; background-color: #ccff99;"><input
+
+                      onclick="
+					var theme = 'Génie rural'; var cote = '631.6';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU6316" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: #ccff99;">Génie
+                    rural</td>
+                  <td style="text-align: center; background-color: #ccff99;"><b>631.6</b></td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'Fertilisants,                      fumiers et enrichissement du sol. Favorisation de la                      croissance. Stimulants, engrais'; var cote = '631.8';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU6318" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: #33ff33;">Fertilisants,
+                    fumiers et enrichissement du sol. Favorisation de la
+                    croissance. Stimulants, engrais</td>
+                  <td style="text-align: center; background-color: #33ff33;"><b>631.8</b></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--Classification Décimale Universelle : Classe 8-->
+          <div id="CDUCL8" style="display: none;">
+            <h4>Classification Décimale de Universelle : </h4>
+            <h3>Détail de la sous-classe 8</h3>
+            <font face="Arial, Helvetica, sans-serif"></font>
+            <table style="width: 450px; " cellpadding="7;">
+              <tbody>
+                <tr>
+                  <td style="background-color: #ccff99; text-align: center;">CDU<br>
+                    <input onclick="showdiv('CDU');" name="theme1" value="CDU" type="radio"></td>
+                  <td>Thème</td>
+                  <td style="text-align: center;">Indice<br>
+                    Num. </td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'Généralités'; var cote = '80';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU80" type="radio"> </td>
+                  <td style="text-align: center; background-color: #33ff33;"><a
+
+                      id="sd1" class="node" title="Questions générales concernant la linguistique et la littérature. Philologie"
+
+                      style="cursor:pointer; ">Généralités</a></td>
+                  <td style="text-align: center; background-color: #33ff33;">80</td>
+                </tr>
+                <tr style="background-color: #ccff99;">
+                  <td style="text-align: center; background-color: #ccff99;"><input
+
+                      onclick="
+					var theme = 'Linguistiques                    et Langues'; var cote = '81';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU81" type="radio"> </td>
+                  <td style="text-align: center; background-color: #ccff99;">Linguistiques
+                    et Langues</td>
+                  <td style="text-align: center; background-color: #ccff99;">81</td>
+                </tr>
+                <tr style="background-color: #33ff33;">
+                  <td style="text-align: center; background-color: #33ff33;"><input
+
+                      onclick="
+					var theme = 'Littérature'; var cote = '82';  					localStorage.setItem(clecote, JSON.stringify(cote));					localStorage.setItem(cletheme, JSON.stringify(theme));					showdiv('Aut');"
+
+                      name="theme1" value="CDU82" type="radio"> </td>
+                  <td style="height: 20px; text-align: center; background-color: #33ff33;">Littérature</td>
+                  <td style="text-align: center; background-color: #33ff33;">82</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--Auteur et Titre-->
+          <div id="Aut" style="display: none;">
+            <div>Pour changer de thème, cliquer à nouveau sur la classification
+              utilisée (étape 1)</div>
+            <h3>Étape 3 : identité du document ?</h3>
+            <table style="width: 450px;" cellpadding="7;">
+              <tbody>
+                <tr>
+                  <td style="text-align: center; background-color: #ccccff;">NOM
+                    de l'émetteur (auteur) :<br>
+                    <input size="50" value="NOM de l'auteur" title="Vide si l'auteur n'est pas identifiable."
+
+                      id="nomaut"> </td>
+                </tr>
+                <tr>
+                  <td style="text-align: center; background-color: #ffcc99;">TITRE
+                    du document :<br>
+                    <input size="50" value="Titre du document" id="titdoc"> </td>
+                </tr>
+              </tbody>
+            </table>
+            <div>Pour changer de thème, cliquer à nouveau sur la classification
+              utilisée (étape 1).<br>
+              Il est possible de modifier le thème sans effacer les données
+              d'identité du document saisies:<br>
+              à condition de ne pas utiliser les touches Ctrl+F5</div>
+            <h3>Étape 4 : à quoi pourrait resssembler la cote ?</h3>
+            <table style="width:450px;" cellpadding="7;">
+              <tbody>
+                <tr style="text-align: center;" bgcolor="#FFD800">
+                  <td style="text-align: center; background-color: #ffcc66;" bgcolor="#FFD800"><input
+
+value="Générer la cote" onclick="genecote()" type="button"></td>
+                </tr>
+                <tr style="text-align: center;" bgcolor="#99ff99">
+                  <td style="text-align: center; background-color: #99ff99;" bgcolor="#99ff99">Recommencer
+                    depuis le début :<br>
+                    <b> Ctrl + F5 (clavier)</b><br>
+                    Fermer le fenêtre où se trouvent les cotes propoées</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Remarques -->
+          <div id="Rem" style="display: yes;"> <br>
+            <br>
+            <table style="width: 450px;" cellpadding="7;">
+              <tbody>
+                <tr style="text-align: left;">
+                  <td><font face="Arial, Helvetica, sans-serif">
+                      <div style="text-align: left;"><b>version du 29 janvier
+                          2018</b></div>
+                      <font face="Arial, Helvetica, sans-serif">Les intitulés
+                        des classes des classifications ont parfois été adaptés
+                        afin d'en simplifier la lecture et les comparaisons.<br>
+                        <br>
+                      </font></font><font face="Arial, Helvetica, sans-serif"><font
+
+                        face="Arial, Helvetica, sans-serif"><i>Simulateur créé
+                          et mis à disposition par JFD,
+                          professeur-documentaliste, Lycée Agricole du
+                          Bourbonnais, Moulins.</i></font></font><br>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="display: yes;"><font face="Arial, Helvetica, sans-serif">
+            </font><br>
+          </div>
+        </font></div>
+      <font face="Arial, Helvetica, sans-serif"> </font> </font>
+  </body>
+</html>
